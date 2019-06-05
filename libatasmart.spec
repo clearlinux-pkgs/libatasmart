@@ -4,7 +4,7 @@
 #
 Name     : libatasmart
 Version  : 0.19
-Release  : 3
+Release  : 4
 URL      : http://0pointer.de/public/libatasmart-0.19.tar.xz
 Source0  : http://0pointer.de/public/libatasmart-0.19.tar.xz
 Summary  : ATA S.M.A.R.T. Reading and Parsing Library
