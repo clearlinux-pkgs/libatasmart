@@ -4,16 +4,15 @@
 #
 Name     : libatasmart
 Version  : 0.19
-Release  : 4
+Release  : 5
 URL      : http://0pointer.de/public/libatasmart-0.19.tar.xz
 Source0  : http://0pointer.de/public/libatasmart-0.19.tar.xz
 Summary  : ATA S.M.A.R.T. Reading and Parsing Library
 Group    : Development/Tools
 License  : LGPL-2.1
-Requires: libatasmart-bin
-Requires: libatasmart-lib
-Requires: libatasmart-doc
-Requires: libatasmart-data
+Requires: libatasmart-bin = %{version}-%{release}
+Requires: libatasmart-data = %{version}-%{release}
+Requires: libatasmart-lib = %{version}-%{release}
 BuildRequires : pkgconfig(libudev)
 
 %description
@@ -24,7 +23,7 @@ git://git.0pointer.de/libatasmart.git
 %package bin
 Summary: bin components for the libatasmart package.
 Group: Binaries
-Requires: libatasmart-data
+Requires: libatasmart-data = %{version}-%{release}
 
 %description bin
 bin components for the libatasmart package.
@@ -41,10 +40,11 @@ data components for the libatasmart package.
 %package dev
 Summary: dev components for the libatasmart package.
 Group: Development
-Requires: libatasmart-lib
-Requires: libatasmart-bin
-Requires: libatasmart-data
-Provides: libatasmart-devel
+Requires: libatasmart-lib = %{version}-%{release}
+Requires: libatasmart-bin = %{version}-%{release}
+Requires: libatasmart-data = %{version}-%{release}
+Provides: libatasmart-devel = %{version}-%{release}
+Requires: libatasmart = %{version}-%{release}
 
 %description dev
 dev components for the libatasmart package.
@@ -61,7 +61,7 @@ doc components for the libatasmart package.
 %package lib
 Summary: lib components for the libatasmart package.
 Group: Libraries
-Requires: libatasmart-data
+Requires: libatasmart-data = %{version}-%{release}
 
 %description lib
 lib components for the libatasmart package.
@@ -69,25 +69,34 @@ lib components for the libatasmart package.
 
 %prep
 %setup -q -n libatasmart-0.19
+cd %{_builddir}/libatasmart-0.19
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1513198908
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1604352829
+export GCC_IGNORE_WERROR=1
+export AR=gcc-ar
+export RANLIB=gcc-ranlib
+export NM=gcc-nm
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 %configure --disable-static
-make V=1  %{?_smp_mflags}
+make  %{?_smp_mflags}
 
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-make VERBOSE=1 V=1 %{?_smp_mflags} check
+make %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1513198908
+export SOURCE_DATE_EPOCH=1604352829
 rm -rf %{buildroot}
 %make_install
 
@@ -105,12 +114,12 @@ rm -rf %{buildroot}
 
 %files dev
 %defattr(-,root,root,-)
-/usr/include/*.h
+/usr/include/atasmart.h
 /usr/lib64/libatasmart.so
 /usr/lib64/pkgconfig/libatasmart.pc
 
 %files doc
-%defattr(-,root,root,-)
+%defattr(0644,root,root,0755)
 %doc /usr/share/doc/libatasmart/*
 
 %files lib
